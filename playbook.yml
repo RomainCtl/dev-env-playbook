@@ -1,17 +1,18 @@
 ---
 - name: Initialize WSL2 Ubuntu Dev Environment
-  hosts: local
+  hosts: localhost
+  connection: local
   vars_files:
     - vars/main.yml
 
   vars_prompt:
     - name: github_user_name
       prompt: "Git global user.name"
-      default: "{{ github_user_name }}"
+      default: ""
       private: false
     - name: github_user_email
       prompt: "Git global user.email"
-      default: "{{ github_user_email }}"
+      default: ""
       private: false
 
   roles:

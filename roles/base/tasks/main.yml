@@ -19,6 +19,7 @@
     name: user.name
     scope: global
     value: "{{ github_user_name }}"
+  when: (github_user_name is defined) and (github_user_name | length > 0)
 
 - name: Set git global user.email
   become: false
@@ -26,6 +27,7 @@
     name: user.email
     scope: global
     value: "{{ github_user_email }}"
+  when: (github_user_email is defined) and (github_user_email | length > 0)
 
 - name: Set git default branch name to main
   become: false

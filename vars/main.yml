@@ -39,9 +39,6 @@ brew_packages:
   - pipenv
   - ansible-lint
 
-github_user_name:
-github_user_email:
-
 java_versions:
   - "25.0.4-tem"
 maven_version: "latest"
