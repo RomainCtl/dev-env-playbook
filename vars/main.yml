@@ -1,0 +1,68 @@
+apt_packages:
+  - build-essential
+  - curl
+  - wget
+  - file
+  - git
+  - unzip
+  - zip
+  - htop
+  - ripgrep
+  - fd-find
+  - fzf
+  - tmux
+  - zsh
+  - ca-certificates
+  - gnupg
+  - lsb-release
+  - software-properties-common
+  - pkg-config
+  - libssl-dev
+
+brew_packages:
+  - gh              # GitHub CLI
+  - lazygit         # terminal git UI
+  - k9s             # kubernetes TUI (if relevant)
+  - httpie
+  - watch
+  - tldr
+  - bat             # better cat
+  - eza             # better ls
+  - dust            # better du
+  - jq
+  - jd
+  - dive
+  - helm
+  - kubernetes-cli
+  - openshift-cli
+  - pipenv
+
+github_user_name: "Your Name"
+github_user_email: "you@example.com"
+
+java_versions:
+  - "21.0.4-tem"    # Temurin LTS example, adjust as needed
+maven_version: "latest"
+
+node_versions:
+  - "22"
+  - "20"
+default_node_version: "22"
+
+python_apt_packages:
+  - python3
+  - python3-pip
+  - python3-venv
+  - python3-dev
+  - pipx
+
+vscode_extensions:
+  - ms-vscode-remote.remote-wsl
+  - redhat.java
+  - vscjava.vscode-maven
+  - vscjava.vscode-java-debug
+  - ms-python.python
+  - rust-lang.rust-analyzer
+  - ms-azuretools.vscode-docker
+  - eamodio.gitlens
+  - esbenp.prettier-vscode

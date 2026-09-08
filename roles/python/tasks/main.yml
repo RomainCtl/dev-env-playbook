@@ -1,0 +1,21 @@
+---
+- name: Install Python system packages
+  apt:
+    name: "{{ python_apt_packages }}"
+    state: present
+
+- name: Ensure pipx path is set up
+  become: false
+  shell: pipx ensurepath
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+
+- name: Install common Python tooling via pipx
+  become: false
+  community.general.pipx:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - poetry
+    - black
+    - ruff

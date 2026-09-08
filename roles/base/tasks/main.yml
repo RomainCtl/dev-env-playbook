@@ -1,0 +1,35 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Upgrade all packages
+  apt:
+    upgrade: dist
+
+- name: Install base packages
+  apt:
+    name: "{{ apt_packages }}"
+    state: present
+
+- name: Set git global user.name
+  become: false
+  community.general.git_config:
+    name: user.name
+    scope: global
+    value: "{{ github_user_name }}"
+
+- name: Set git global user.email
+  become: false
+  community.general.git_config:
+    name: user.email
+    scope: global
+    value: "{{ github_user_email }}"
+
+- name: Set git default branch name to main
+  become: false
+  community.general.git_config:
+    name: init.defaultBranch
+    scope: global
+    value: main

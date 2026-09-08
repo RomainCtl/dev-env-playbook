@@ -1,0 +1,59 @@
+---
+- name: Install zsh, oh-my-zsh dependencies
+  apt:
+    name:
+      - zsh
+      - fonts-powerline
+    state: present
+  become: true
+
+- name: Check if oh-my-zsh is already installed
+  stat:
+    path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+  register: ohmyzsh_installed
+
+- name: Install oh-my-zsh
+  shell: >
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    --unattended
+  when: not ohmyzsh_installed.stat.exists
+  environment:
+    RUNZSH: "no"
+    CHSH: "no"
+
+- name: Clone Powerlevel10k theme
+  git:
+    repo: https://github.com/romkatv/powerlevel10k.git
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/themes/powerlevel10k"
+    depth: 1
+  register: p10k_clone
+
+- name: Set ZSH_THEME to powerlevel10k in .zshrc
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    regexp: '^ZSH_THEME='
+    line: 'ZSH_THEME="powerlevel10k/powerlevel10k"'
+    create: yes
+
+# --- Restore YOUR existing p10k config instead of prompting fresh setup ---
+
+- name: Copy existing .p10k.zsh config into place
+  copy:
+    src: "files/p10k/.p10k.zsh"     # place your file here in the ansible project
+    dest: "{{ ansible_env.HOME }}/.p10k.zsh"
+    mode: '0644'
+  when: p10k_config_source == "local_file"
+
+- name: Ensure .p10k.zsh is sourced in .zshrc
+  blockinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    marker: "# {mark} ANSIBLE MANAGED P10K SOURCE"
+    block: |
+      [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+    create: yes
+
+- name: Set default shell to zsh
+  become: true
+  user:
+    name: "{{ ansible_user_id }}"
+    shell: /usr/bin/zsh

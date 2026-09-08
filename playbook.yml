@@ -1,0 +1,47 @@
+---
+- name: Initialize WSL2 Ubuntu Dev Environment
+  hosts: local
+  vars_files:
+    - vars/main.yml
+
+  tasks:
+    - name: Include base role (requires sudo)
+      include_role:
+        name: base
+      become: true
+
+    - name: Include Homebrew role
+      include_role:
+        name: homebrew
+      become: false
+
+    - name: Include shell role
+      include_role:
+        name: shell
+
+    - name: Include SDKMAN/Java/Maven role
+      include_role:
+        name: sdkman_java
+
+    - name: Include NVM/Node role
+      include_role:
+        name: nvm_node
+
+    - name: Include Python role
+      include_role:
+        name: python
+      become: true
+
+    - name: Include Rust role
+      include_role:
+        name: rust
+
+    - name: Include Docker role
+      include_role:
+        name: docker
+      become: true
+
+    - name: Include VS Code role
+      include_role:
+        name: vscode
+      become: true
