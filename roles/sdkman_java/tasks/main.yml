@@ -1,38 +1,51 @@
 ---
 - name: Check if SDKMAN is installed
-  stat:
+  ansible.builtin.stat:
     path: "{{ ansible_env.HOME }}/.sdkman/bin/sdkman-init.sh"
-  register: sdkman_installed
+  register: sdkman_java_installed
+
+- name: Download SDKMAN installer
+  ansible.builtin.get_url:
+    url: https://get.sdkman.io
+    dest: /tmp/sdkman_install.sh
+    mode: '0755'
+  when: not sdkman_java_installed.stat.exists
 
 - name: Install SDKMAN
-  shell: curl -s "https://get.sdkman.io" | bash
-  when: not sdkman_installed.stat.exists
+  ansible.builtin.shell: >
+    set -o pipefail &&
+    bash /tmp/sdkman_install.sh
+  when: not sdkman_java_installed.stat.exists
+  changed_when: true
 
 - name: Ensure SDKMAN init is sourced in .zshrc
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ ansible_env.HOME }}/.zshrc"
     line: |
       export SDKMAN_DIR="$HOME/.sdkman"
       [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
     insertafter: EOF
-    create: yes
+    create: true
 
 - name: Install Java versions via SDKMAN
-  shell: >
+  ansible.builtin.shell: >
     bash -c "source {{ ansible_env.HOME }}/.sdkman/bin/sdkman-init.sh &&
     sdk install java {{ item }}"
   args:
     creates: "{{ ansible_env.HOME }}/.sdkman/candidates/java/{{ item }}"
   loop: "{{ java_versions }}"
+  changed_when: true
 
 - name: Set default Java version
-  shell: >
+  ansible.builtin.shell: >
     bash -c "source {{ ansible_env.HOME }}/.sdkman/bin/sdkman-init.sh &&
     sdk default java {{ java_versions[0] }}"
+  changed_when: true
 
 - name: Install Maven via SDKMAN
-  shell: >
+  ansible.builtin.shell: >
     bash -c "source {{ ansible_env.HOME }}/.sdkman/bin/sdkman-init.sh &&
     sdk install maven {{ maven_version }}"
   args:
     creates: "{{ ansible_env.HOME }}/.sdkman/candidates/maven/current"
+  changed_when: true

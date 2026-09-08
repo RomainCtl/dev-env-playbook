@@ -1,20 +1,20 @@
 ---
 - name: Check if 'code' CLI is available (from Windows VS Code + Remote-WSL)
-  command: which code
-  register: code_cli
+  ansible.builtin.command: which code
+  register: vscode_cli
   ignore_errors: true
   changed_when: false
 
 - name: Install VS Code extensions
-  command: "code --install-extension {{ item }}"
+  ansible.builtin.command: "code --install-extension {{ item }}"
   loop: "{{ vscode_extensions }}"
-  when: code_cli.rc == 0
+  when: vscode_cli.rc == 0
   changed_when: true
 
 - name: Warn if code CLI not found
-  debug:
+  ansible.builtin.debug:
     msg: >
       'code' command not found in PATH. Install VS Code on Windows with the
       "Remote - WSL" extension, then open a folder from WSL once via
       `code .` to register the CLI shim in this distro's PATH.
-  when: code_cli.rc != 0
+  when: vscode_cli.rc != 0

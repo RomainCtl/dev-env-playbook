@@ -20,6 +20,7 @@ apt_packages:
   - libssl-dev
 
 brew_packages:
+  - git
   - gh              # GitHub CLI
   - lazygit         # terminal git UI
   - k9s             # kubernetes TUI (if relevant)
@@ -36,18 +37,19 @@ brew_packages:
   - kubernetes-cli
   - openshift-cli
   - pipenv
+  - ansible-lint
 
-github_user_name: "Your Name"
-github_user_email: "you@example.com"
+github_user_name:
+github_user_email:
 
 java_versions:
-  - "21.0.4-tem"    # Temurin LTS example, adjust as needed
+  - "25.0.4-tem"
 maven_version: "latest"
 
 node_versions:
+  - "24"
   - "22"
-  - "20"
-default_node_version: "22"
+default_node_version: "24"
 
 python_apt_packages:
   - python3
@@ -58,6 +60,8 @@ python_apt_packages:
 
 vscode_extensions:
   - ms-vscode-remote.remote-wsl
+  - davidanson.vscode-markdownlint
+  - saoudrizwan.claude-dev
   - redhat.java
   - vscjava.vscode-maven
   - vscjava.vscode-java-debug

@@ -1,6 +1,6 @@
 ---
 - name: Install zsh, oh-my-zsh dependencies
-  apt:
+  ansible.builtin.apt:
     name:
       - zsh
       - fonts-powerline
@@ -8,52 +8,60 @@
   become: true
 
 - name: Check if oh-my-zsh is already installed
-  stat:
+  ansible.builtin.stat:
     path: "{{ ansible_env.HOME }}/.oh-my-zsh"
-  register: ohmyzsh_installed
+  register: shell_ohmyzsh_installed
+
+- name: Download oh-my-zsh installer
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+    dest: /tmp/ohmyzsh_install.sh
+    mode: '0755'
+  when: not shell_ohmyzsh_installed.stat.exists
 
 - name: Install oh-my-zsh
-  shell: >
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-    --unattended
-  when: not ohmyzsh_installed.stat.exists
+  ansible.builtin.shell: >
+    set -o pipefail &&
+    bash /tmp/ohmyzsh_install.sh --unattended
+  when: not shell_ohmyzsh_installed.stat.exists
   environment:
     RUNZSH: "no"
     CHSH: "no"
+  changed_when: true
 
 - name: Clone Powerlevel10k theme
-  git:
+  ansible.builtin.git:
     repo: https://github.com/romkatv/powerlevel10k.git
     dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/themes/powerlevel10k"
     depth: 1
-  register: p10k_clone
+    version: master
 
 - name: Set ZSH_THEME to powerlevel10k in .zshrc
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ ansible_env.HOME }}/.zshrc"
     regexp: '^ZSH_THEME='
     line: 'ZSH_THEME="powerlevel10k/powerlevel10k"'
-    create: yes
+    create: true
 
 # --- Restore YOUR existing p10k config instead of prompting fresh setup ---
 
 - name: Copy existing .p10k.zsh config into place
-  copy:
+  ansible.builtin.copy:
     src: "files/p10k/.p10k.zsh"     # place your file here in the ansible project
     dest: "{{ ansible_env.HOME }}/.p10k.zsh"
     mode: '0644'
   when: p10k_config_source == "local_file"
 
 - name: Ensure .p10k.zsh is sourced in .zshrc
-  blockinfile:
+  ansible.builtin.blockinfile:
     path: "{{ ansible_env.HOME }}/.zshrc"
     marker: "# {mark} ANSIBLE MANAGED P10K SOURCE"
     block: |
       [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-    create: yes
+    create: true
 
 - name: Set default shell to zsh
   become: true
-  user:
+  ansible.builtin.user:
     name: "{{ ansible_user_id }}"
     shell: /usr/bin/zsh

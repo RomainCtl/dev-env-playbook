@@ -1,19 +1,19 @@
 ---
 - name: Remove old docker packages if present
-  apt:
+  ansible.builtin.apt:
     name:
       - docker.io
       - docker-compose
     state: absent
 
 - name: Add Docker's official GPG key
-  get_url:
+  ansible.builtin.get_url:
     url: https://download.docker.com/linux/ubuntu/gpg
     dest: /etc/apt/keyrings/docker.asc
     mode: '0644'
 
 - name: Add Docker repository
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: >
       deb [arch={{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}
       signed-by=/etc/apt/keyrings/docker.asc]
@@ -22,31 +22,30 @@
     filename: docker
 
 - name: Install Docker packages
-  apt:
+  ansible.builtin.apt:
     name:
       - docker-ce
       - docker-ce-cli
       - containerd.io
       - docker-buildx-plugin
       - docker-compose-plugin
-    update_cache: yes
+    update_cache: true
     state: present
 
 - name: Add current user to docker group
-  user:
+  ansible.builtin.user:
     name: "{{ ansible_user_id }}"
     groups: docker
-    append: yes
+    append: true
 
-- name: Enable Docker service (if systemd is active in WSL2)
-  systemd:
+- name: Enable Docker service (systemd must be active in WSL2)
+  ansible.builtin.systemd:
     name: docker
-    enabled: yes
+    enabled: true
     state: started
-  ignore_errors: true   # Older WSL2 without systemd support will fail gracefully
 
 - name: Note about WSL2 systemd
-  debug:
+  ansible.builtin.debug:
     msg: >
       If this failed, ensure /etc/wsl.conf has [boot] systemd=true and
       restart WSL (`wsl --shutdown` from Windows), or start dockerd manually.

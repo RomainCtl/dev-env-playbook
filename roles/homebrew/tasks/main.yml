@@ -1,41 +1,44 @@
 ---
 - name: Check if Homebrew is already installed
-  stat:
+  ansible.builtin.stat:
     path: /home/linuxbrew/.linuxbrew/bin/brew
-  register: brew_installed
+  register: homebrew_installed
 
 - name: Install Homebrew (Linuxbrew)
-  shell: >
+  ansible.builtin.shell: >
+    set -o pipefail &&
     NONINTERACTIVE=1 /bin/bash -c
     "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  when: not brew_installed.stat.exists
+  when: not homebrew_installed.stat.exists
   environment:
     NONINTERACTIVE: "1"
+  changed_when: true
 
 - name: Ensure Homebrew shellenv is sourced in .zshrc
-  blockinfile:
+  ansible.builtin.blockinfile:
     path: "{{ ansible_env.HOME }}/.zshrc"
     marker: "# {mark} ANSIBLE MANAGED HOMEBREW BLOCK"
     block: |
       eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-    create: yes
+    create: true
 
 - name: Install brew packages
-  shell: >
+  ansible.builtin.shell: >
     bash -c "eval \"$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\" &&
     brew install {{ item }}"
   args:
     creates: "/home/linuxbrew/.linuxbrew/bin/{{ item }}"
   loop: "{{ brew_packages }}"
+  changed_when: true
 
 - name: Run brew doctor (informational, non-failing)
-  shell: >
+  ansible.builtin.shell: >
     bash -c "eval \"$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\" &&
     brew doctor"
-  register: brew_doctor_result
+  register: homebrew_doctor_result
   changed_when: false
   ignore_errors: true
 
 - name: Show brew doctor output
-  debug:
-    msg: "{{ brew_doctor_result.stdout_lines }}"
+  ansible.builtin.debug:
+    msg: "{{ homebrew_doctor_result.stdout_lines }}"

@@ -1,0 +1,25 @@
+---
+- name: 'Remove duplicate packages (ie: duplicated between brew and aptitude)'
+  ansible.builtin.apt:
+    name:
+      - git
+      - ansible
+    state: absent
+
+- name: 'Remove useless packages from the cache'
+  ansible.builtin.apt:
+    autoclean: true
+
+- name: 'Remove useless packages from the cache'
+  ansible.builtin.apt:
+    autoremove: true
+
+- name: Delete tmp content
+  ansible.builtin.file:
+    state: absent
+    path: '{{ item }}'
+  with_items:
+    - /tmp/nvm_install.sh
+    - /tmp/rustup_install.sh
+    - /tmp/sdkman_install.sh
+    - /tmp/ohmyzsh_install.sh

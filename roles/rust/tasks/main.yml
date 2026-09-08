@@ -1,20 +1,32 @@
 ---
 - name: Check if rustup is installed
-  stat:
+  ansible.builtin.stat:
     path: "{{ ansible_env.HOME }}/.cargo/bin/rustc"
-  register: rustup_installed
+  register: rust_installed
+
+- name: Download rustup installer
+  ansible.builtin.get_url:
+    url: https://sh.rustup.rs
+    dest: /tmp/rustup_install.sh
+    mode: '0755'
+  when: not rust_installed.stat.exists
 
 - name: Install rustup + stable toolchain
-  shell: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-  when: not rustup_installed.stat.exists
+  ansible.builtin.shell: >
+    set -o pipefail &&
+    bash /tmp/rustup_install.sh -y
+  when: not rust_installed.stat.exists
+  changed_when: true
 
 - name: Ensure cargo env sourced in .zshrc
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ ansible_env.HOME }}/.zshrc"
     line: '. "$HOME/.cargo/env"'
-    create: yes
+    create: true
+    mode: '0644'
 
 - name: Install common cargo components
-  shell: >
+  ansible.builtin.shell: >
     bash -c "source {{ ansible_env.HOME }}/.cargo/env &&
     rustup component add clippy rustfmt"
+  changed_when: true

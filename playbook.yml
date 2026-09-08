@@ -4,44 +4,23 @@
   vars_files:
     - vars/main.yml
 
-  tasks:
-    - name: Include base role (requires sudo)
-      include_role:
-        name: base
-      become: true
+  vars_prompt:
+    - name: github_user_name
+      prompt: "Git global user.name"
+      default: "{{ github_user_name }}"
+      private: false
+    - name: github_user_email
+      prompt: "Git global user.email"
+      default: "{{ github_user_email }}"
+      private: false
 
-    - name: Include Homebrew role
-      include_role:
-        name: homebrew
-      become: false
-
-    - name: Include shell role
-      include_role:
-        name: shell
-
-    - name: Include SDKMAN/Java/Maven role
-      include_role:
-        name: sdkman_java
-
-    - name: Include NVM/Node role
-      include_role:
-        name: nvm_node
-
-    - name: Include Python role
-      include_role:
-        name: python
-      become: true
-
-    - name: Include Rust role
-      include_role:
-        name: rust
-
-    - name: Include Docker role
-      include_role:
-        name: docker
-      become: true
-
-    - name: Include VS Code role
-      include_role:
-        name: vscode
-      become: true
+  roles:
+    - { role: base, become: true }
+    - { role: homebrew }
+    - { role: shell }
+    - { role: sdkman_java }
+    - { role: nvm_node }
+    - { role: python, become: true }
+    - { role: rust }
+    - { role: docker, become: true }
+    - { role: vscode, become: true }

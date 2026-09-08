@@ -1,14 +1,15 @@
 ---
 - name: Install Python system packages
-  apt:
+  ansible.builtin.apt:
     name: "{{ python_apt_packages }}"
     state: present
 
 - name: Ensure pipx path is set up
   become: false
-  shell: pipx ensurepath
+  ansible.builtin.command: pipx ensurepath
   environment:
     PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+  changed_when: false
 
 - name: Install common Python tooling via pipx
   become: false
