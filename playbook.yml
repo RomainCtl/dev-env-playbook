@@ -16,8 +16,8 @@
 
   roles:
     - { role: base, become: true }
-    - { role: homebrew }
     - { role: shell }
+    - { role: homebrew }
     - { role: sdkman_java }
     - { role: nvm_node }
     - { role: python, become: true }

@@ -20,7 +20,6 @@
     marker: "# {mark} ANSIBLE MANAGED HOMEBREW BLOCK"
     block: |
       eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-    create: true
 
 - name: Install brew packages
   ansible.builtin.shell: >
