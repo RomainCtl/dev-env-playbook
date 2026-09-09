@@ -1,7 +1,7 @@
 ---
 - name: Check if NVM is installed
   ansible.builtin.stat:
-    path: "/home/{{ USERNAME }}/.nvm/nvm.sh"
+    path: "/home/{{ ansible_facts['ansible_user_id'] }}/.nvm/nvm.sh"
   register: nvm_node_installed
 
 - name: Download NVM installer
@@ -20,7 +20,7 @@
 
 - name: Ensure NVM init is sourced in .zshrc
   ansible.builtin.blockinfile:
-    path: "/home/{{ USERNAME }}/.zshrc"
+    path: "/home/{{ ansible_facts['ansible_user_id'] }}/.zshrc"
     marker: "# {mark} ANSIBLE MANAGED NVM BLOCK"
     block: |
       export NVM_DIR="$HOME/.nvm"
@@ -30,17 +30,17 @@
 
 - name: Install Node versions via NVM
   ansible.builtin.shell: >
-    bash -c "export NVM_DIR=/home/{{ USERNAME }}/.nvm &&
+    bash -c 'export NVM_DIR=/home/{{ ansible_facts['ansible_user_id'] }}/.nvm &&
     source $NVM_DIR/nvm.sh &&
-    nvm install {{ item }}"
+    nvm install {{ item }}'
   args:
-    creates: "/home/{{ USERNAME }}/.nvm/versions/node/v{{ item }}*"
+    creates: "/home/{{ ansible_facts['ansible_user_id'] }}/.nvm/versions/node/v{{ item }}*"
   loop: "{{ node_versions }}"
   changed_when: true
 
 - name: Set default Node version
   ansible.builtin.shell: >
-    bash -c "export NVM_DIR=/home/{{ USERNAME }}/.nvm &&
+    bash -c 'export NVM_DIR=/home/{{ ansible_facts['ansible_user_id'] }}/.nvm &&
     source $NVM_DIR/nvm.sh &&
-    nvm alias default {{ default_node_version }}"
+    nvm alias default {{ default_node_version }}'
   changed_when: true
