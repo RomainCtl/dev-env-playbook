@@ -43,8 +43,6 @@
     line: 'ZSH_THEME="powerlevel10k/powerlevel10k"'
     create: true
 
-# --- Restore YOUR existing p10k config instead of prompting fresh setup ---
-
 - name: Copy oh-my-zsh custom scripts
   ansible.builtin.copy:
     src: '{{ item }}'
@@ -57,3 +55,9 @@
     path: "/home/{{ ansible_facts['user_id'] }}/.zshrc"
     insertafter: '# ZSH_CUSTOM'
     line: "ZSH_CUSTOM=/home/{{ ansible_facts['user_id'] }}/.oh-my-zsh/custom"
+
+- name: Set user shell to zsh
+  ansible.builtin.user:
+    name: "{{ ansible_facts['user_id'] }}"
+    shell: /bin/zsh
+  become: true
