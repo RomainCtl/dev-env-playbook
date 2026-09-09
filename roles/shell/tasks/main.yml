@@ -9,7 +9,7 @@
 
 - name: Check if oh-my-zsh is already installed
   ansible.builtin.stat:
-    path: "/home/{{ ansible_facts['ansible_user_id'] }}/.oh-my-zsh"
+    path: "/home/{{ ansible_facts['user_id'] }}/.oh-my-zsh"
   register: shell_ohmyzsh_installed
 
 - name: Download oh-my-zsh installer
@@ -32,13 +32,13 @@
 - name: Clone Powerlevel10k theme
   ansible.builtin.git:
     repo: https://github.com/romkatv/powerlevel10k.git
-    dest: "/home/{{ ansible_facts['ansible_user_id'] }}/.oh-my-zsh/custom/themes/powerlevel10k"
+    dest: "/home/{{ ansible_facts['user_id'] }}/.oh-my-zsh/custom/themes/powerlevel10k"
     depth: 1
     version: master
 
 - name: Set ZSH_THEME to powerlevel10k in .zshrc
   ansible.builtin.lineinfile:
-    path: "/home/{{ ansible_facts['ansible_user_id'] }}/.zshrc"
+    path: "/home/{{ ansible_facts['user_id'] }}/.zshrc"
     regexp: '^ZSH_THEME='
     line: 'ZSH_THEME="powerlevel10k/powerlevel10k"'
     create: true
@@ -48,12 +48,12 @@
 - name: Copy oh-my-zsh custom scripts
   ansible.builtin.copy:
     src: '{{ item }}'
-    dest: "/home/{{ ansible_facts['ansible_user_id'] }}/.oh-my-zsh/custom"
+    dest: "/home/{{ ansible_facts['user_id'] }}/.oh-my-zsh/custom"
     mode: 'u=rwx,g=r,o=r'
   with_fileglob: '{{ role_path }}/files/.oh-my-zsh/custom/*.zsh'
 
 - name: Set ZSH_CUSTOM
   ansible.builtin.lineinfile:
-    path: "/home/{{ ansible_facts['ansible_user_id'] }}/.zshrc"
+    path: "/home/{{ ansible_facts['user_id'] }}/.zshrc"
     insertafter: '# ZSH_CUSTOM'
-    line: "ZSH_CUSTOM=/home/{{ ansible_facts['ansible_user_id'] }}/.oh-my-zsh/custom"
+    line: "ZSH_CUSTOM=/home/{{ ansible_facts['user_id'] }}/.oh-my-zsh/custom"

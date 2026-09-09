@@ -15,9 +15,9 @@
 - name: Add Docker repository
   ansible.builtin.apt_repository:
     repo: >
-      deb [arch={{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}
+      deb [arch={{ 'amd64' if ansible_facts['architecture'] == 'x86_64' else ansible_facts['architecture'] }}
       signed-by=/etc/apt/keyrings/docker.asc]
-      https://download.docker.com/linux/ubuntu {{ ansible_facts['ansible_distribution_release'] }} stable
+      https://download.docker.com/linux/ubuntu {{ ansible_facts['distribution_release'] }} stable
     state: present
     filename: docker
 
@@ -34,7 +34,7 @@
 
 - name: Add current user to docker group
   ansible.builtin.user:
-    name: "{{ ansible_facts['ansible_user_id'] }}"
+    name: "{{ ansible_facts['user_id'] }}"
     groups: docker
     append: true
 
