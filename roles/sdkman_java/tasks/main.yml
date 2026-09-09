@@ -45,7 +45,7 @@
 - name: Install Maven via SDKMAN
   ansible.builtin.shell: >
     bash -c "source /home/{{ USERNAME }}/.sdkman/bin/sdkman-init.sh &&
-    sdk install maven {{ maven_version }}"
+    sdk install maven"
   args:
     creates: "/home/{{ USERNAME }}/.sdkman/candidates/maven/current"
   changed_when: true

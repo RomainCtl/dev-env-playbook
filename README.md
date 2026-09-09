@@ -2,15 +2,12 @@
 
 ## How to
 
+Clone this repo or download and unzip it.
+
+Then you just need to run (it will install ansible, install requirements and proceed with the playbook):
+
 ```sh
-## One-time: install ansible + git in WSL2
-sudo apt update && sudo apt install -y ansible git
-
-## Install needed requirements:
-ansible-galaxy install -r requirements.yml
-
-## Run the playbook
-ansible-playbook --connection local --inventory invetory.ini --extra-var USERNAME="YOUR_USERNAME" playbook.yml
+install.sh
 ```
 
 ## Editor/IDE

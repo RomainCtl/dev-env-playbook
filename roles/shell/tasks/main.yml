@@ -45,23 +45,15 @@
 
 # --- Restore YOUR existing p10k config instead of prompting fresh setup ---
 
-- name: Copy existing .p10k.zsh config into place
+- name: Copy oh-my-zsh custom scripts
   ansible.builtin.copy:
-    src: "files/p10k/.p10k.zsh"     # place your file here in the ansible project
-    dest: "/home/{{ USERNAME }}/.p10k.zsh"
-    mode: '0644'
-  when: p10k_config_source == "local_file"
+    src: '{{ item }}'
+    dest: '/home/{{ USERNAME }}/.oh-my-zsh/custom'
+    mode: 'u=rwx,g=r,o=r'
+  with_fileglob: '{{ role_path }}/files/.oh-my-zsh/custom/*.zsh'
 
-- name: Ensure .p10k.zsh is sourced in .zshrc
-  ansible.builtin.blockinfile:
+- name: Set ZSH_CUSTOM
+  ansible.builtin.lineinfile:
     path: "/home/{{ USERNAME }}/.zshrc"
-    marker: "# {mark} ANSIBLE MANAGED P10K SOURCE"
-    block: |
-      [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-    create: true
-
-- name: Set default shell to zsh
-  become: true
-  ansible.builtin.user:
-    name: "{{ ansible_user_id }}"
-    shell: /usr/bin/zsh
+    insertafter: '# ZSH_CUSTOM'
+    line: 'ZSH_CUSTOM=/home/{{ USERNAME }}/.oh-my-zsh/custom'
