@@ -37,6 +37,7 @@ brew_packages:
   - openshift-cli
   - pipenv
   - ansible-lint
+  - imagemagick
 
 java_versions:
   - "25.0.4-tem"
