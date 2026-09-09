@@ -1,7 +1,7 @@
 ---
 - name: Check if SDKMAN is installed
   ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/.sdkman/bin/sdkman-init.sh"
+    path: "/home/{{ USERNAME }}/.sdkman/bin/sdkman-init.sh"
   register: sdkman_java_installed
 
 - name: Download SDKMAN installer
@@ -20,7 +20,7 @@
 
 - name: Ensure SDKMAN init is sourced in .zshrc
   ansible.builtin.lineinfile:
-    path: "{{ ansible_env.HOME }}/.zshrc"
+    path: "/home/{{ USERNAME }}/.zshrc"
     line: |
       export SDKMAN_DIR="$HOME/.sdkman"
       [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
@@ -29,23 +29,23 @@
 
 - name: Install Java versions via SDKMAN
   ansible.builtin.shell: >
-    bash -c "source {{ ansible_env.HOME }}/.sdkman/bin/sdkman-init.sh &&
+    bash -c "source /home/{{ USERNAME }}/.sdkman/bin/sdkman-init.sh &&
     sdk install java {{ item }}"
   args:
-    creates: "{{ ansible_env.HOME }}/.sdkman/candidates/java/{{ item }}"
+    creates: "/home/{{ USERNAME }}/.sdkman/candidates/java/{{ item }}"
   loop: "{{ java_versions }}"
   changed_when: true
 
 - name: Set default Java version
   ansible.builtin.shell: >
-    bash -c "source {{ ansible_env.HOME }}/.sdkman/bin/sdkman-init.sh &&
+    bash -c "source /home/{{ USERNAME }}/.sdkman/bin/sdkman-init.sh &&
     sdk default java {{ java_versions[0] }}"
   changed_when: true
 
 - name: Install Maven via SDKMAN
   ansible.builtin.shell: >
-    bash -c "source {{ ansible_env.HOME }}/.sdkman/bin/sdkman-init.sh &&
+    bash -c "source /home/{{ USERNAME }}/.sdkman/bin/sdkman-init.sh &&
     sdk install maven {{ maven_version }}"
   args:
-    creates: "{{ ansible_env.HOME }}/.sdkman/candidates/maven/current"
+    creates: "/home/{{ USERNAME }}/.sdkman/candidates/maven/current"
   changed_when: true

@@ -1,7 +1,6 @@
 ---
 - name: Initialize WSL2 Ubuntu Dev Environment
   hosts: localhost
-  connection: local
   vars_files:
     - vars/main.yml
 

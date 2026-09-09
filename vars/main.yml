@@ -67,3 +67,4 @@ vscode_extensions:
   - ms-azuretools.vscode-docker
   - eamodio.gitlens
   - esbenp.prettier-vscode
+  - editorconfig.editorconfig

@@ -9,7 +9,7 @@
 
 - name: Check if oh-my-zsh is already installed
   ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+    path: "/home/{{ USERNAME }}/.oh-my-zsh"
   register: shell_ohmyzsh_installed
 
 - name: Download oh-my-zsh installer
@@ -32,13 +32,13 @@
 - name: Clone Powerlevel10k theme
   ansible.builtin.git:
     repo: https://github.com/romkatv/powerlevel10k.git
-    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/themes/powerlevel10k"
+    dest: "/home/{{ USERNAME }}/.oh-my-zsh/custom/themes/powerlevel10k"
     depth: 1
     version: master
 
 - name: Set ZSH_THEME to powerlevel10k in .zshrc
   ansible.builtin.lineinfile:
-    path: "{{ ansible_env.HOME }}/.zshrc"
+    path: "/home/{{ USERNAME }}/.zshrc"
     regexp: '^ZSH_THEME='
     line: 'ZSH_THEME="powerlevel10k/powerlevel10k"'
     create: true
@@ -48,13 +48,13 @@
 - name: Copy existing .p10k.zsh config into place
   ansible.builtin.copy:
     src: "files/p10k/.p10k.zsh"     # place your file here in the ansible project
-    dest: "{{ ansible_env.HOME }}/.p10k.zsh"
+    dest: "/home/{{ USERNAME }}/.p10k.zsh"
     mode: '0644'
   when: p10k_config_source == "local_file"
 
 - name: Ensure .p10k.zsh is sourced in .zshrc
   ansible.builtin.blockinfile:
-    path: "{{ ansible_env.HOME }}/.zshrc"
+    path: "/home/{{ USERNAME }}/.zshrc"
     marker: "# {mark} ANSIBLE MANAGED P10K SOURCE"
     block: |
       [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

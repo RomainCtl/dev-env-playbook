@@ -16,7 +16,7 @@
 
 - name: Ensure Homebrew shellenv is sourced in .zshrc
   ansible.builtin.blockinfile:
-    path: "{{ ansible_env.HOME }}/.zshrc"
+    path: "/home/{{ USERNAME }}/.zshrc"
     marker: "# {mark} ANSIBLE MANAGED HOMEBREW BLOCK"
     block: |
       eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
