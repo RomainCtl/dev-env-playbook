@@ -1,0 +1,7 @@
+---
+- name: Install tools via curl installers
+  ansible.builtin.include_tasks: install_one.yml
+  loop: "{{ curl_installers }}"
+  loop_control:
+    loop_var: curl_installer
+    label: "{{ curl_installer.name }}"

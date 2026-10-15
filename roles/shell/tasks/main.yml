@@ -20,9 +20,7 @@
   when: not shell_ohmyzsh_installed.stat.exists
 
 - name: Install oh-my-zsh
-  ansible.builtin.shell: >
-    set -o pipefail &&
-    bash /tmp/ohmyzsh_install.sh --unattended
+  ansible.builtin.shell: bash /tmp/ohmyzsh_install.sh --unattended
   when: not shell_ohmyzsh_installed.stat.exists
   environment:
     RUNZSH: "no"

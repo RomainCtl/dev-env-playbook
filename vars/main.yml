@@ -39,6 +39,15 @@ brew_packages:
   - ansible-lint
   - imagemagick
 
+curl_installers:
+  - name: mammouth
+    url: https://code.mammouth.ai/install.sh
+    creates: "/home/{{ ansible_facts['user_id'] }}/.mammouth/bin"
+
+  - name: redis-cli
+    url: https://packages.redis.io/redis-cli/install.sh
+    creates: "/home/{{ ansible_facts['user_id'] }}/.local/bin/redis-cli"
+
 java_versions:
   - "25.0.4-tem"
 

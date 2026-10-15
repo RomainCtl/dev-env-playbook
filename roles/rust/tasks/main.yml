@@ -12,9 +12,7 @@
   when: not rust_installed.stat.exists
 
 - name: Install rustup + stable toolchain
-  ansible.builtin.shell: >
-    set -o pipefail &&
-    bash /tmp/rustup_install.sh -y
+  ansible.builtin.shell: bash /tmp/rustup_install.sh -y
   when: not rust_installed.stat.exists
   changed_when: true
 

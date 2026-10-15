@@ -1,0 +1,26 @@
+---
+- name: "Check if {{ curl_installer.name }} is installed"
+  ansible.builtin.stat:
+    path: "{{ curl_installer.creates }}"
+  register: curl_installers_state
+
+- name: "Install {{ curl_installer.name }}"
+  when: not curl_installers_state.stat.exists
+  block:
+    - name: "Download {{ curl_installer.name }} installer"
+      ansible.builtin.get_url:
+        url: "{{ curl_installer.url }}"
+        dest: "/tmp/{{ curl_installer.name }}_install.sh"
+        mode: "0755"
+
+    - name: "Run {{ curl_installer.name }} installer"
+      ansible.builtin.command:
+        cmd: "bash /tmp/{{ curl_installer.name }}_install.sh {{ curl_installer.args | default('') }}"
+        creates: "{{ curl_installer.creates }}"
+      environment: "{{ curl_installer.environment | default({}) }}"
+
+  always:
+    - name: "Remove {{ curl_installer.name }} installer"
+      ansible.builtin.file:
+        path: "/tmp/{{ curl_installer.name }}_install.sh"
+        state: absent
