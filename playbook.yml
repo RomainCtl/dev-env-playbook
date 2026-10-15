@@ -25,4 +25,4 @@
     - { role: curl_installers }
     - { role: docker, become: true }
     - { role: vscode, become: true }
-    - { role: finalize_cleanup }
+    - { role: finalize_cleanup, become: true }

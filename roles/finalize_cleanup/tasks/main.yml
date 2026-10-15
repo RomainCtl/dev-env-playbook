@@ -1,11 +1,4 @@
 ---
-- name: 'Remove duplicate packages (ie: duplicated between brew and aptitude)'
-  ansible.builtin.apt:
-    name:
-      - git
-      - ansible
-    state: absent
-
 - name: 'Remove useless packages from the cache'
   ansible.builtin.apt:
     autoclean: true

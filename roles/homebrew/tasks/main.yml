@@ -22,18 +22,16 @@
       eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 - name: Install brew packages
-  ansible.builtin.shell: >
-    bash -c "eval \"$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\" &&
-    brew install {{ item }}"
-  args:
-    creates: "/home/linuxbrew/.linuxbrew/bin/{{ item }}"
-  loop: "{{ brew_packages }}"
-  changed_when: true
+  community.general.homebrew:
+    name: "{{ brew_packages }}"
+    state: present
+    path: /home/linuxbrew/.linuxbrew/bin
+  become: false
 
 - name: Run brew doctor (informational, non-failing)
-  ansible.builtin.shell: >
-    bash -c "eval \"$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\" &&
-    brew doctor"
+  ansible.builtin.command: /home/linuxbrew/.linuxbrew/bin/brew doctor
+  environment:
+    PATH: "/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:{{ ansible_facts['env']['PATH'] }}"
   register: homebrew_doctor_result
   changed_when: false
   ignore_errors: true

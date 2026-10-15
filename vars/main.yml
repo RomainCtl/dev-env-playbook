@@ -20,7 +20,6 @@ apt_packages:
   - libimage-exiftool-perl
 
 brew_packages:
-  - git
   - gh              # GitHub CLI
   - lazygit         # terminal git UI
   - k9s             # kubernetes TUI (if relevant)
