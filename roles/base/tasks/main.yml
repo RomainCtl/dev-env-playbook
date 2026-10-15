@@ -35,3 +35,10 @@
     name: init.defaultBranch
     scope: global
     value: main
+
+- name: Set git lg alias
+  become: false
+  community.general.git_config:
+    name: alias.lg
+    scope: global
+    value: 'log --all --decorate --oneline --full-history --date-order --graph'
