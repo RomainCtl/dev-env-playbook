@@ -17,6 +17,7 @@ apt_packages:
   - software-properties-common
   - pkg-config
   - libssl-dev
+  - libimage-exiftool-perl
 
 brew_packages:
   - git
